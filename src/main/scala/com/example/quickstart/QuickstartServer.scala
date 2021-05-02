@@ -15,6 +15,7 @@ object QuickstartServer {
     for {
       client <- BlazeClientBuilder[F](global).stream
       helloWorldAlg = HelloWorld.impl[F]
+      questionAlg = QuestionService.impl[F]
       jokeAlg = Jokes.impl[F](client)
 
       // Combine Service Routes into an HttpApp.
@@ -22,7 +23,7 @@ object QuickstartServer {
       // want to extract a segments not checked
       // in the underlying routes.
       httpApp = (
-        QuickstartRoutes.auth[F]() <+>
+        QuestionRoutes.question[F](questionAlg) <+>
         QuickstartRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
         QuickstartRoutes.jokeRoutes[F](jokeAlg)
       ).orNotFound
