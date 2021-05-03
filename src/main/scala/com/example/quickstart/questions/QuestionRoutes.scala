@@ -9,25 +9,25 @@ object QuestionRoutes {
   def question[F[_]: Sync](Q: QuestionService[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
-    
+
     HttpRoutes.of[F] {
       case GET -> Root / "question" =>
         for {
-          greeting <- Q.list()
-          resp <- Ok(greeting)
+          questions <- Q.list()
+          resp <- Ok(questions)
         } yield resp
 
-      case GET -> Root / "question" / name =>
+      case GET -> Root / "question" / id =>
         for {
-          greeting <- Q.getQuestion(name)
-          resp <- Ok(greeting)
+          question <- Q.getQuestion(id)
+          resp <- Ok(question)
         } yield resp
 
       case req @ POST -> Root / "question" =>
         for {
-          greeting <- req.as[Question]
-          _ <- Q.addQuestion(greeting)
-          resp <- Ok(greeting)
+          question <- req.as[Question]
+          _ <- Q.addQuestion(question)
+          resp <- Ok(question)
         } yield resp
     }
   }

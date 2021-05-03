@@ -17,7 +17,7 @@ object QuestionService {
       Database.getQuestions.pure[F]
 
     def getQuestion(id: String): F[Question] =
-      Database.db(id.toInt).pure[F]
+      Database.db.questions(id.toInt).pure[F]
 
     def addQuestion(question: Question): F[Question] = {
       Database.add(question)
