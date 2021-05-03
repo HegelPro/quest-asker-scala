@@ -6,6 +6,7 @@ import org.http4s._
 import cats.effect.Sync
 import cats.Applicative
 import org.http4s.circe._
+import io.circe.syntax._
 
 case class Answers(text: String)
 object Answers {
@@ -34,16 +35,16 @@ object Question {
 
 class QuestionList(val questions: List[Question])
 object QuestionList {
-    implicit val questionsListEncoder: Encoder[QuestionList] = deriveEncoder[QuestionList]
-    implicit def questionsListEntityEncoder[F[_]: Applicative]: EntityEncoder[F, QuestionList] =
-        jsonEncoderOf
+    implicit val questionListEncoder: Encoder[QuestionList] = new Encoder[QuestionList] {
+      final def apply(a: QuestionList): Json = a.questions.asJson
+    }
+    implicit def questionListEntityEncoder[F[_]: Applicative]: EntityEncoder[F, QuestionList] =
+      jsonEncoderOf[F, QuestionList]
 }
 
 class Database(val questions: List[Question])
 object Database {
     var db = List[Question]()
-
-    // def apply(questions: List[Question]) = new Database(questions)
 
     def add(question: Question) =
         db = db :+ question
