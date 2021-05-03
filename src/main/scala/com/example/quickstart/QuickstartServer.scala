@@ -23,6 +23,7 @@ object QuickstartServer {
       // want to extract a segments not checked
       // in the underlying routes.
       httpApp = (
+        // FileRoutes.routes[F] <+>
         QuestionRoutes.question[F](questionAlg) <+>
         QuickstartRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
         QuickstartRoutes.jokeRoutes[F](jokeAlg)

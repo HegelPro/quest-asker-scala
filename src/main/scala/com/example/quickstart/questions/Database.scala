@@ -32,7 +32,7 @@ object Question {
         jsonEncoderOf
 }
 
-case class QuestionList(val questions: List[Question])
+class QuestionList(val questions: List[Question])
 object QuestionList {
     implicit val questionsListEncoder: Encoder[QuestionList] = deriveEncoder[QuestionList]
     implicit def questionsListEntityEncoder[F[_]: Applicative]: EntityEncoder[F, QuestionList] =
@@ -49,5 +49,5 @@ object Database {
         db = db :+ question
 
     def getQuestions: QuestionList =
-        QuestionList(db)
+        new QuestionList(db)
 }
