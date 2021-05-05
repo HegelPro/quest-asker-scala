@@ -9,10 +9,65 @@
 </head>
 <body>
     <div class="container p-3">
-        <form>
-            <input name="df">
+        <p id="question"></p>
+        <form id="form">
+            <div id="answers" class="mb-2"></div>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
     
+    <script>
+        const formElem = document.querySelector("#form")
+        const questionElem = document.querySelector("#question")
+        const answersElem = document.querySelector("#answers")
+
+        const url = new URL(window.location.href)
+        const id = url.searchParams.get("id")
+
+        fetch(`http://localhost:8080/question/${id}`)
+            .then(res => res.json())
+            .then(question => {
+                console.log(question)
+                questionElem.innerText = question.text;
+                
+                question.answers.forEach((answer, index) => {
+                    const checkElem = document.createElement("div")
+                    checkElem.className = "form-check"
+
+                    const checkInputElem = document.createElement("input")
+                    checkInputElem.className = "form-check-input"
+                    checkInputElem.type = "radio"
+                    checkInputElem.name = "answer"
+                    checkInputElem.id = `answer${index}`
+
+                    const checkLabelElem = document.createElement("label")
+                    checkLabelElem.className = "form-check-label"
+                    checkLabelElem.for = `answer${index}`
+                    checkLabelElem.innerText = answer.text
+
+                    checkElem.append(checkInputElem)
+                    checkElem.append(checkLabelElem)
+                    answersElem.append(checkElem)
+                })
+            })
+
+        formElem.onsubmit = e => {
+            e.preventDefault()
+
+            // const body = JSON.stringify({
+            //     text: formElem.querySelector('#question').value,
+            //     answers: [...formElem.querySelectorAll('.answer').values()]
+            //         .map(({value}) => ({text: value, voteCounter: 0}))
+            // })
+
+            // fetch('http://localhost:8080/question', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body,
+            // })
+            Promise.resolve()
+                .then(() => window.location.replace(`http://localhost:8080`))
+        };
+    </script>
 </body>
 </html>

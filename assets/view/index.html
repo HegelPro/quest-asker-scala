@@ -9,11 +9,17 @@
 </head>
 <body>
     <div class="container p-3">
-        <div id="question"></div>
+        <p id="question"></p>
+        <ul id="answers" class="list-group mb-2"></ul>
+        <button id="back" class="btn btn-primary">Back</button>
     </div>
 
     <script>
         const questionElem = document.querySelector("#question")
+        const answersElem = document.querySelector("#answers")
+        const backElem = document.querySelector("#back")
+
+        backElem.onclick = () => window.location.replace(`http://localhost:8080`)
     
         const url = new URL(window.location.href)
         const id = url.searchParams.get("id")
@@ -22,20 +28,15 @@
             .then(res => res.json())
             .then(question => {
                 console.log(question)
-                const newQuestionElem = document.createElement("p")
-                const newAnswersElem = document.createElement("ul")
-
-                newQuestionElem.innerText = question.text;
+                questionElem.innerText = question.text;
                 
                 question.answers.forEach(answer => {
                     const newAnswerElem = document.createElement("li")
-                    newAnswerElem.innerText = `${answer.text} ${answer.voteCounter}`
+                    newAnswerElem.className = "list-group-item"
+                    newAnswerElem.innerHTML = `${answer.text} <span class="badge bg-secondary">${answer.voteCounter}</span>`
 
-                    newAnswersElem.append(newAnswerElem)
+                    answersElem.append(newAnswerElem)
                 })
-
-                questionElem.append(newQuestionElem)
-                questionElem.append(newAnswersElem)
             })
     </script>
 </body>

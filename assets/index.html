@@ -9,13 +9,17 @@
 </head>
 <body>
     <div class="container p-3">
-        <div class="card">
+        <div class="card mb-2">
             <ul id="list" class="list-group list-group-flush"></ul>
         </div>
+        <button id="add" class="btn btn-primary">Add question</button>
     </div>
 
     <script>
         const listElem = document.querySelector("#list")
+        const addElem = document.querySelector("#add")
+
+        addElem.onclick = () => window.location.replace(`http://localhost:8080/create`)
 
         fetch('http://localhost:8080/question')
             .then(res => res.json())
@@ -23,13 +27,22 @@
                 console.log(questions)
                 questions.forEach((question, index) => {
                     const newLiElem = document.createElement("li")
-                    newLiElem.className = "list-group-item"
+                    newLiElem.className = "list-group-item list-group-item-action"
                     newLiElem.onclick = () => window.location.replace(`http://localhost:8080/view?id=${index}`)
 
                     const newQuestionElem = document.createElement("p")
                     newQuestionElem.innerText = question.text;
 
+                    const newSelectBtnElem = document.createElement("button")
+                    newSelectBtnElem.className = "btn btn-primary"
+                    newSelectBtnElem.innerText = "Select answer"
+                    newSelectBtnElem.onclick = e => {
+                        e.stopPropagation()
+                        window.location.replace(`http://localhost:8080/select?id=${index}`)
+                    }
+
                     newLiElem.append(newQuestionElem)
+                    newLiElem.append(newSelectBtnElem)
                     listElem.append(newLiElem)
                 })
             })
