@@ -29,6 +29,13 @@ object QuestionRoutes {
           _ <- Q.addQuestion(question)
           resp <- Ok(question)
         } yield resp
+
+      case req @ PATCH -> Root / "question" =>
+        for {
+          selectQuestion <- req.as[SelectAnswer]
+          _ <- Q.selectQuestion(selectQuestion)
+          resp <- Ok()
+        } yield resp
     }
   }
 }

@@ -33,39 +33,28 @@
                 question.answers.forEach((answer, index) => {
                     const checkElem = document.createElement("div")
                     checkElem.className = "form-check"
-
-                    const checkInputElem = document.createElement("input")
-                    checkInputElem.className = "form-check-input"
-                    checkInputElem.type = "radio"
-                    checkInputElem.name = "answer"
-                    checkInputElem.id = `answer${index}`
-
-                    const checkLabelElem = document.createElement("label")
-                    checkLabelElem.className = "form-check-label"
-                    checkLabelElem.for = `answer${index}`
-                    checkLabelElem.innerText = answer.text
-
-                    checkElem.append(checkInputElem)
-                    checkElem.append(checkLabelElem)
+                    checkElem.innerHTML = `
+                        <input class="form-check-input" type="radio" name="answer" id="answer${index}" value="${index}">
+                        <label class="form-check-label" for="answer${index}" name="answer" id=answer${index}>${answer.text}</label>
+                    `
                     answersElem.append(checkElem)
                 })
             })
 
         formElem.onsubmit = e => {
             e.preventDefault()
+            const formData = new FormData(formElem)
 
-            // const body = JSON.stringify({
-            //     text: formElem.querySelector('#question').value,
-            //     answers: [...formElem.querySelectorAll('.answer').values()]
-            //         .map(({value}) => ({text: value, voteCounter: 0}))
-            // })
+            const body = JSON.stringify({
+                questionId: +id,
+                answerId: +formData.get("answer")
+            })
 
-            // fetch('http://localhost:8080/question', {
-            //     method: 'POST',
-            //     headers: {'Content-Type': 'application/json'},
-            //     body,
-            // })
-            Promise.resolve()
+            fetch('http://localhost:8080/question', {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body,
+            })
                 .then(() => window.location.replace(`http://localhost:8080`))
         };
     </script>

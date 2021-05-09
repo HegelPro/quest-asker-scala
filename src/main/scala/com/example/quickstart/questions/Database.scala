@@ -41,6 +41,21 @@ object Database {
     def add(question: Question) =
         db = Database(db.questions :+ question)
 
+    def select(questionId: Int, answerId: Int) = {
+        val question = db.questions(questionId)
+        val answer = question.answers(answerId)
+        db = Database(db.questions.updated(
+            questionId,
+            Question(
+                question.text,
+                question.answers.updated(
+                    answerId,
+                    Answers(answer.text, answer.voteCounter + 1)
+                )
+            )
+        ))
+    }
+
     def getQuestions: QuestionList =
         new QuestionList(db.questions)
 }

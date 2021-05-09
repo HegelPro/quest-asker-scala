@@ -1,12 +1,23 @@
 package com.example.quickstart
 
-import cats.Applicative
 import cats.implicits._
+import org.http4s.circe._
+import io.circe._, io.circe.generic.semiauto._
+import org.http4s._
+import cats.Applicative
+import cats.effect.Sync
+
+case class SelectAnswer(val questionId: Int, val answerId: Int)
+object SelectAnswer {
+    implicit val questionDecoder: Decoder[SelectAnswer] = deriveDecoder
+    implicit def questionEntityDecoder[F[_]: Sync]: EntityDecoder[F, SelectAnswer] = jsonOf
+}
 
 trait QuestionService[F[_]]{
   def list(): F[QuestionList]
   def getQuestion(n: String): F[Question]
   def addQuestion(question: Question): F[Question]
+  def selectQuestion(selectAnswer: SelectAnswer): F[Unit]
 }
 
 object QuestionService {
@@ -21,8 +32,12 @@ object QuestionService {
 
     def addQuestion(question: Question): F[Question] = {
       Database.add(question)
-      println(Database.db)
       question.pure[F]
+    }
+
+    def selectQuestion(selectAnswer: SelectAnswer): F[Unit] = {
+      Database.select(selectAnswer.questionId, selectAnswer.answerId)
+      ().pure[F]
     }
   }
 }
